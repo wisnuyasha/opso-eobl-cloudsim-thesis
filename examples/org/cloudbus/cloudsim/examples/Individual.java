@@ -4,20 +4,20 @@ import java.util.Random;
 
 public class Individual {
     private int[] chromosome;
-    private double fitness = Double.POSITIVE_INFINITY; // Minimization problem
-    private int[] velocity;
+    private double fitness = -1;
+    private double[] velocity;
     private int[] personalBestPosition;
-    private double personalBestFitness = Double.POSITIVE_INFINITY; // Minimization problem
+    private double personalBestFitness = Double.NEGATIVE_INFINITY;
 
     public Individual(int[] chromosome) {
         this.chromosome = chromosome;
-        this.velocity = new int[chromosome.length];
+        this.velocity = new double[chromosome.length];
         this.personalBestPosition = chromosome.clone();
     }
 
     public Individual(int chromosomeLength, int dataCenterIterator) {
         this.chromosome = new int[chromosomeLength];
-        this.velocity = new int[chromosomeLength];
+        this.velocity = new double[chromosomeLength];
         this.personalBestPosition = new int[chromosomeLength];
 
         dataCenterIterator = dataCenterIterator - 1;
@@ -30,16 +30,16 @@ public class Individual {
         for (int gene = 0; gene < chromosomeLength; gene++) {
             int rand = random.nextInt(range) + min;
             setGene(gene, rand);
-            this.velocity[gene] = random.nextInt(range) + min;
+            this.velocity[gene] = random.nextDouble();
             this.personalBestPosition[gene] = rand;
         }
     }
 
-    public int[] getVelocity() {
+    public double[] getVelocity() {
         return this.velocity;
     }
 
-    public void setVelocity(int index, int value) {
+    public void setVelocity(int index, double value) {
         this.velocity[index] = value;
     }
 
