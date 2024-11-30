@@ -72,7 +72,17 @@ public class CloudSimulation {
             DatacenterBroker broker = createBroker();
             int brokerId = broker.getId();
             int vmNumber = 54;
-            int cloudletNumber = 7395;
+             int cloudletNumber = 7395;
+//            int cloudletNumber = 1000;
+    //      int cloudletNumber = 2000;
+    //      int cloudletNumber = 3000;
+    //      int cloudletNumber = 4000;
+    //      int cloudletNumber = 5000;
+    //      int cloudletNumber = 6000;
+    //      int cloudletNumber = 7000;
+    //      int cloudletNumber = 8000;
+    //      int cloudletNumber = 9000;
+    //      int cloudletNumber = 10000
 
             vmlist = createVM(brokerId, vmNumber);
             cloudletList = createCloudlet(brokerId, cloudletNumber);
@@ -88,14 +98,14 @@ public class CloudSimulation {
                 for (int dataCenterIterator = 1; dataCenterIterator <= 6; dataCenterIterator++) {
                     
                     // Parameters for DAPDP
-                    int Imax = 5;
+                    int Imax = 15;
                     int populationSize = 50;
-                    double wMax = 0.8;
-                    double wMin = 0.4;
-                    double l1 = 2.0;
-                    double l2 = 2.0;
+                    double wMax = 0.4;
+                    double wMin = 0.2;
+                    double l1 = 2;
+                    double l2 = 2;
 
-                    OPSO OPSO = new OPSO(Imax, populationSize, wMax, wMin, l1, l2, cloudletList, vmlist);
+                    OPSO OPSO = new OPSO(Imax, populationSize, wMax, wMin, l1, l2, cloudletList, vmlist, cloudletNumber);
 
                     // Initialize population
                     System.out.println("Datacenter " + dataCenterIterator + " Population Initialization");
@@ -197,14 +207,13 @@ public class CloudSimulation {
 
   private static ArrayList<Double> getSeedValue(int cloudletcount) {
     ArrayList<Double> seed = new ArrayList<Double>();
-    // Log.printLine(System.getProperty("user.dir") + "/datasets/randSimple/RandSimple10000.txt");
-    Log.printLine(System.getProperty("user.dir") + "/cloudsim-3.0.3/datasets/SDSC/SDSC7395.txt");
-    // Log.printLine(System.getProperty("user.dir") + "/datasets/randomStratified/RandStratified1000.txt");
+    // Log.printLine(System.getProperty("user.dir") + "/cloudsim-3.0.3/datasets/randSimple/RandSimple1000.txt");
+    // Log.printLine(System.getProperty("user.dir") + "/cloudsim-3.0.3/datasets/SDSC/SDSC7395.txt");
+//      Log.printLine(System.getProperty("user.dir") + "/cloudsim-3.0.3/datasets/randomStratified/RandStratified1000.txt");
 
     try {
-      // File fobj = new File(System.getProperty("user.dir")+ "/dataset/RandSimple"+bot+"000.txt");
-      // File fobj = new File(System.getProperty("user.dir") + "/datasets/randomSimple/RandSimple10000.txt");
-   	  // File fobj = new File(System.getProperty("user.dir") + "/datasets/randomStratified/RandStratified1000.txt");
+//       File fobj = new File(System.getProperty("user.dir") + "/cloudsim-3.0.3/datasets/randomSimple/RandSimple1000.txt");
+//   	  File fobj = new File(System.getProperty("user.dir") + "/cloudsim-3.0.3/datasets/randomStratified/RandStratified1000.txt");
       File fobj = new File(System.getProperty("user.dir") + "/cloudsim-3.0.3/datasets/SDSC/SDSC7395.txt");
       java.util.Scanner readFile = new java.util.Scanner(fobj);
 
