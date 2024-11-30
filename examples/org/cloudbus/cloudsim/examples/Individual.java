@@ -25,12 +25,17 @@ public class Individual {
         int min = 0 + 9 * dataCenterIterator;
         int range = max - min + 1;
 
+        double vmSize = 54.0 - 1.0;
+        double Vmax = vmSize * 0.5;
+        double minVelocity = -Vmax;
+        double maxVelocity = Vmax;
+
         Random random = new Random();
 
         for (int gene = 0; gene < chromosomeLength; gene++) {
             int rand = random.nextInt(range) + min;
             setGene(gene, rand);
-            this.velocity[gene] = random.nextDouble();
+            this.velocity[gene] = minVelocity + (maxVelocity - minVelocity) * random.nextDouble();
             this.personalBestPosition[gene] = rand;
         }
     }
