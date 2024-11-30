@@ -98,7 +98,7 @@ public class CloudSimulation {
                 for (int dataCenterIterator = 1; dataCenterIterator <= 6; dataCenterIterator++) {
                     
                     // Parameters for DAPDP
-                    int Imax = 15;
+                    int Imax = 10;
                     int populationSize = 50;
                     double wMax = 0.4;
                     double wMin = 0.2;
