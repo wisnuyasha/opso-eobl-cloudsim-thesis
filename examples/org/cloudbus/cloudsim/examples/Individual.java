@@ -25,8 +25,8 @@ public class Individual {
         int min = 0 + 9 * dataCenterIterator;
         int range = max - min + 1;
 
-        double vmSize = 54.0 - 1.0;
-        double Vmax = vmSize * 0.5;
+        double vmSize = (54.0 / 6.0) - 1.0;
+        double Vmax = vmSize * 0.2;
         double minVelocity = -Vmax;
         double maxVelocity = Vmax;
 
@@ -92,6 +92,7 @@ public class Individual {
         StringBuilder output = new StringBuilder();
         for (int gene = 0; gene < this.chromosome.length; gene++) {
             output.append(this.chromosome[gene]);
+            output.append(", ");
         }
         return output.toString();
     }
