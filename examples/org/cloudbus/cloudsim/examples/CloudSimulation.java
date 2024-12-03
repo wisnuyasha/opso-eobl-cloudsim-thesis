@@ -40,7 +40,7 @@ public class CloudSimulation {
     private static PowerDatacenter datacenter1, datacenter2, datacenter3, datacenter4, datacenter5, datacenter6;
     private static List<Cloudlet> cloudletList;
     private static List<Vm> vmlist;
-    private static int bot = 2;
+    private static int bot = 5;
 
     public static void main(String[] args) {
         Locale.setDefault(new Locale("en", "US"));
@@ -93,7 +93,7 @@ public class CloudSimulation {
                     int Imax = 15;
                     int populationSize = 75;
                     double wMax = 0.7;
-                    double wMin = 0.3;
+                    double wMin = 0.4;
                     double l1 = 2;
                     double l2 = 2;
 

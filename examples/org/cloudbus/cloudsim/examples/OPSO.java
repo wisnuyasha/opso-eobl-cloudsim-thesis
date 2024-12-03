@@ -105,15 +105,15 @@ public class OPSO {
 
                 // Update velocity
                 double newVelocity = w * vPrev
-                        + l1 * r1 * (pBest - currentPosition)
-                        + l2 * r2 * (gBest - currentPosition);
+                        + l1 * r1 * (pBest - vPrev)
+                        + l2 * r2 * (gBest - vPrev);
                 // System.out.println("-----Iteration: " + i + "-----");
                 // System.out.println("Previous Velocity (vPrev): " + vPrev);
                 // System.out.println("-New Velocity (raw): " + newVelocity);
 
-                // Apply position bounds
-                double vmSize = ((double) vmList.size() / 6.0 ) - 1.0;
-                double Vmax = vmSize * 0.2;
+                // velocity bounds 
+                double vmSize = 54.0 - 1.0;
+                double Vmax = vmSize * 0.5;
                 double velocityMin = -Vmax;
                 double velocityMax = Vmax;
 
@@ -125,15 +125,15 @@ public class OPSO {
                 }
 
                 // Update position
-                int newPosition = currentPosition + (int) Math.round(newVelocity);
+                int newPosition = (int) Math.round(newVelocity);
                 // System.out.println("Current Position: " + currentPosition);
                 // System.out.println("-New Position (raw): " + newPosition);
 
                 // Apply position bounds
-                int minPosition = (dataCenterIterator - 1) * 9;
-                int maxPosition = ((dataCenterIterator) * 9) - 1;
-                // int minPosition = 0;
-                // int maxPosition = vmList.size() - 1;
+                // int minPosition = (dataCenterIterator - 1) * 9;
+                // int maxPosition = ((dataCenterIterator) * 9) - 1;
+                int minPosition = 0;
+                int maxPosition = vmList.size() - 1;
 
                 // If the position is invalid
                 if (newPosition < minPosition) {

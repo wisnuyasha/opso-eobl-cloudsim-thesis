@@ -25,8 +25,8 @@ public class Individual {
         int min = 0 + 9 * dataCenterIterator;
         int range = max - min + 1;
 
-        double vmSize = (54.0 / 6.0) - 1.0;
-        double Vmax = vmSize * 0.2;
+        double vmSize = 54.0 - 1.0;
+        double Vmax = vmSize * 0.5;
         double minVelocity = -Vmax;
         double maxVelocity = Vmax;
 
