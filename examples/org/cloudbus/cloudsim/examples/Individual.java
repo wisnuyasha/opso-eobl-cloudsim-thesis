@@ -13,6 +13,7 @@ public class Individual {
         this.chromosome = chromosome;
         this.velocity = new double[chromosome.length];
         this.personalBestPosition = chromosome.clone();
+        this.personalBestFitness = Double.NEGATIVE_INFINITY;
     }
 
     public Individual(int chromosomeLength, int dataCenterIterator) {
@@ -25,12 +26,18 @@ public class Individual {
         int min = 0 + 9 * dataCenterIterator;
         int range = max - min + 1;
 
+        // max velocity is 8/0.1 = 0.8
+        double vmSize = (54.0 / 6.0) - 1.0;
+        double Vmax = vmSize * 0.1;
+        double minVelocity = -Vmax;
+        double maxVelocity = Vmax;
+
         Random random = new Random();
 
         for (int gene = 0; gene < chromosomeLength; gene++) {
             int rand = random.nextInt(range) + min;
             setGene(gene, rand);
-            this.velocity[gene] = random.nextDouble();
+            this.velocity[gene] = minVelocity + (maxVelocity - minVelocity) * random.nextDouble();
             this.personalBestPosition[gene] = rand;
         }
     }
@@ -87,6 +94,7 @@ public class Individual {
         StringBuilder output = new StringBuilder();
         for (int gene = 0; gene < this.chromosome.length; gene++) {
             output.append(this.chromosome[gene]);
+            output.append(", ");
         }
         return output.toString();
     }
