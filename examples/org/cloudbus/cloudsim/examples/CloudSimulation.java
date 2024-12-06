@@ -90,9 +90,9 @@ public class CloudSimulation {
                 for (int dataCenterIterator = 1; dataCenterIterator <= 6; dataCenterIterator++) {
                     
                     // Parameters for DAPDP
-                    int Imax = 15;
-                    int populationSize = 75;
-                    double wMax = 0.7;
+                    int Imax = 10;
+                    int populationSize = 30;
+                    double wMax = 0.8;
                     double wMin = 0.3;
                     double l1 = 2;
                     double l2 = 2;
@@ -125,8 +125,7 @@ public class CloudSimulation {
                     for (int assigner = 0 + (dataCenterIterator - 1) * 9 + cloudletIterator * 54;
                          assigner < 9 + (dataCenterIterator - 1) * 9 + cloudletIterator * 54; assigner++) {
                         int vmId = bestSolution[assigner - (dataCenterIterator - 1) * 9 - cloudletIterator * 54];
-                        // System.out.println("Assigner: " + assigner + " vmId: " + vmId);
-                        // System.out.println("best solution length: " + bestSolution.length + " vmId: " + vmId);
+//                        System.out.println("Assigner: " + assigner + " vmId: " + vmId + " best solution length: " + bestSolution.length);
                         broker.bindCloudletToVm(assigner, vmId);
                     }
                 }

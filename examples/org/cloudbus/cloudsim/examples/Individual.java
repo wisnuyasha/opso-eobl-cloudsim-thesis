@@ -13,6 +13,7 @@ public class Individual {
         this.chromosome = chromosome;
         this.velocity = new double[chromosome.length];
         this.personalBestPosition = chromosome.clone();
+        this.personalBestFitness = Double.NEGATIVE_INFINITY;
     }
 
     public Individual(int chromosomeLength, int dataCenterIterator) {
@@ -25,8 +26,9 @@ public class Individual {
         int min = 0 + 9 * dataCenterIterator;
         int range = max - min + 1;
 
+        // max velocity is 8/0.1 = 0.8
         double vmSize = (54.0 / 6.0) - 1.0;
-        double Vmax = vmSize * 0.2;
+        double Vmax = vmSize * 0.1;
         double minVelocity = -Vmax;
         double maxVelocity = Vmax;
 

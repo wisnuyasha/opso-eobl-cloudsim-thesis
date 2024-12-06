@@ -58,8 +58,10 @@ public class OPSO {
                 // System.out.println("Chromosome: " + individual.toString());
                 globalBestPosition = individual.getChromosome().clone();
             }
+        }
 
-            // applyEOBL(population, dataCenterIterator, cloudletIteration);
+        if (globalBestFitness > Double.NEGATIVE_INFINITY) {
+            applyEOBL(population, dataCenterIterator, cloudletIteration);
         }
     }
 
@@ -80,8 +82,8 @@ public class OPSO {
 
 
         if (oppositeFitness > globalBestFitness) {
-            // System.out.println("-----EOBL SUCCESS: " + oppositeFitness + " ----- Before :" + globalBestFitness);
             globalBestFitness = oppositeFitness;
+            // System.out.println("-----EOBL Debug: " + oppositeFitness + " ----- Before :" + globalBestFitness);
             globalBestPosition = oppositeIndividual.getChromosome().clone();
         }
     }
@@ -113,7 +115,7 @@ public class OPSO {
 
                 // Apply position bounds
                 double vmSize = ((double) vmList.size() / 6.0 ) - 1.0;
-                double Vmax = vmSize * 0.2;
+                double Vmax = vmSize * 0.1;
                 double velocityMin = -Vmax;
                 double velocityMax = Vmax;
 
