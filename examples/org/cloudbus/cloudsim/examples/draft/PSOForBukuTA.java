@@ -6,14 +6,13 @@ import java.util.Random;
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Vm;
 
-public class OPSO {
+public class PSO {
     // Parameters
     private int Imax; // Maximum number of iterations
     private int populationSize; // Population size P
-    private double wMax; // Maximum inertia weight
-    private double wMin; // Minimum inertia weight
-    private double l1; // Learning factor
-    private double l2; // Learning factor
+    private double w; // Inertia weight static 
+    private double l1; // Komponen kognitif
+    private double l2; // Komponen sosial
 
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
@@ -21,17 +20,16 @@ public class OPSO {
     private double globalBestFitness = Double.NEGATIVE_INFINITY;
     private int[] globalBestPosition;
 
-    public OPSO(int Imax, int populationSize, double wMax, double wMin, double l1, double l2,
+    public PSO(int Imax, int populationSize, double w, double l1, double l2,
                          List<Cloudlet> cloudletList, List<Vm> vmList, int chromosomeLength) {
         this.Imax = Imax;
         this.populationSize = populationSize;
-        this.wMax = wMax;
-        this.wMin = wMin;
+        this.w = w;
         this.l1 = l1;
         this.l2 = l2;
         this.cloudletList = cloudletList;
         this.vmList = vmList;
-//        this.globalBestPosition = new int[chromosomeLength];
+        this.globalBestPosition = new int[chromosomeLength];
     }
 
     // Step 3: Initialize population
@@ -59,114 +57,54 @@ public class OPSO {
                 globalBestPosition = individual.getChromosome().clone();
             }
         }
-        
-//       applyEOBL(population, dataCenterIterator, cloudletIteration);
-    }
-
-    public void applyEOBL(Population population, int dataCenterIterator, int cloudletIteration) {
-        int maxGene = ((dataCenterIterator) * 9) - 1;
-        int minGene = (dataCenterIterator - 1) * 9;
-        
-        Random random = new Random();
-
-        int[] oppositeSolution = new int[globalBestPosition.length];
-
-        for (int i = 0; i < globalBestPosition.length; i++) {
-            int gb = globalBestPosition[i];
-            int candidate;
-            do {
-                candidate = minGene + random.nextInt(maxGene - minGene + 1);
-            } while (candidate == gb);
-            
-            oppositeSolution[i] = candidate;
-        }
-
-        Individual oppositeIndividual = new Individual(oppositeSolution);
-
-        // evaluate fitness & update gbest 
-        double oppositeFitness = calcFitness(oppositeIndividual, dataCenterIterator, cloudletIteration);
-        oppositeIndividual.setFitness(oppositeFitness);
-
-
-        if (oppositeFitness > globalBestFitness) {
-            System.out.println("-----EOBL SUCCESS: " + oppositeFitness + " ----- Before :" + globalBestFitness);
-            globalBestFitness = oppositeFitness;
-            globalBestPosition = oppositeIndividual.getChromosome().clone();
-        }
     }
 
     // Step 7: Update velocities and positions
     public void updateVelocitiesAndPositions(Population population, int iteration, int dataCenterIterator) {
-        double w = wMax - ((wMax - wMin) * iteration) / Imax; // Update inertia weight
-        // System.out.println("----------- Iteration: " + iteration + ", Inertia Weight (w): " + w);
-
         Random random = new Random();
 
         for (Individual particle : population.getIndividuals()) {
             for (int i = 0; i < particle.getChromosomeLength(); i++) {
-                int vPrev = particle.getVelocity()[i];
-                int pBest = particle.getPersonalBestPosition()[i];
-                int gBest = globalBestPosition[i];
+                double vPrev = particle.getVelocity()[i];
+                double pBest = particle.getPersonalBestPosition()[i];
+                double gBest = globalBestPosition[i];
                 int currentPosition = particle.getGene(i);
 
-                double r1 = random.nextDouble(); // r1 antara 0.0 hingga 1.0
-                double r2 = random.nextDouble(); // r2 antara 0.0 hingga 1.0
+                double r1 = random.nextDouble();
+                double r2 = random.nextDouble();
 
-                // Update velocity
-                int newVelocity = (int) Math.round(
-                    w * vPrev
-                    + l1 * r1 * (pBest - currentPosition)
-                    + l2 * r2 * (gBest - currentPosition)
-                );
-//                System.out.println("-----Iteration: " + i + "-----");
-//                System.out.println("Previous Velocity (vPrev): " + vPrev);
-//                System.out.println("-New Velocity (raw): " + newVelocity);
+                double newVelocity = w * vPrev
+                        + l1 * r1 * (pBest - currentPosition)
+                        + l2 * r2 * (gBest - currentPosition);
 
-                // Apply position bounds
-                int vmSize = (int) ((double) vmList.size() / 6.0 - 1.0);
-                int Vmax = (int) (vmSize * 0.5);
-                int velocityMin = -Vmax;
-                int velocityMax = Vmax;
+                double vmSize = ((double) vmList.size() / 6.0 ) - 1.0;
+                double Vmax = vmSize * 0.5;
+                double velocityMin = -Vmax;
+                double velocityMax = Vmax;
 
-                // Batasi velocity
                 if (newVelocity < velocityMin) {
                     newVelocity = velocityMin;
                 } else if (newVelocity > velocityMax) {
                     newVelocity = velocityMax;
                 }
 
-                // Update position
-                int newPosition = currentPosition + newVelocity;
-//                System.out.println("Current Position: " + currentPosition);
-//                System.out.println("-New Position (raw): " + newPosition);
+                int newPosition = currentPosition + (int) Math.round(newVelocity);
 
-                // Apply position bounds
                 int minPosition = (dataCenterIterator - 1) * 9;
                 int maxPosition = ((dataCenterIterator) * 9) - 1;
-                // int minPosition = 0;
-                // int maxPosition = vmList.size() - 1;
 
-                // If the position is invalid
                 if (newPosition < minPosition) {
                     newPosition = minPosition;
                 } else if (newPosition > maxPosition) {
                     newPosition = maxPosition;
                 }
 
-                // Update particle
                 particle.setVelocity(i, newVelocity);
                 particle.setGene(i, newPosition);
-
-//                System.out.println("pBest: " + pBest + ", gBest: " + gBest);
-//                System.out.println("r1: " + r1 + ", r2: " + r2);
-//                System.out.println("--New Velocity (bounded): " + newVelocity);
-//                System.out.println("--New Position (bounded): " + newPosition);
             }
         }
     }
 
-
-    // Calculate fitness based on the system fairness (Equation 1)
     public double calcFitness(Individual individual, int dataCenterIterator, int cloudletIteration) {
         double totalExecutionTime = 0;
         double totalCost = 0;
@@ -183,23 +121,13 @@ public class OPSO {
             iterator++;
         }
 
-        // // System Fairness F (Equation 1)
-        // double fitness = -totalExecutionTime; // Negative for minimization
-        // double fitness = - (totalExecutionTime + totalCost);
+       double makespanFitness = calculateMakespanFitness(totalExecutionTime);
+       double costFitness = calculateCostFitness(totalCost);
+       
+       double fitness = makespanFitness + costFitness;
 
-        // Calculate makespan and cost fitness components
-        // System.out.println("-----Cloudlet Iteration: " + cloudletIteration);
-        // System.out.println("-Total Execution Time (before): " + totalExecutionTime);
-        // System.out.println("-Total Cost (before): " + totalCost);
-
-        double makespanFitness = calculateMakespanFitness(totalExecutionTime);
-        double costFitness = calculateCostFitness(totalCost);
-        // System.out.println("--Total Execution Time (Makespan Fitness) (after): " + makespanFitness);
-        // System.out.println("--Total Cost (Cost Fitness) (after): " + costFitness);
-        
-        double fitness = makespanFitness + costFitness;
-
-        return fitness;
+       individual.setFitness(fitness);
+       return fitness;        
     }
 
     private double calculateMips(int vmIndex) {

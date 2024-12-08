@@ -82,7 +82,7 @@ public class CloudSimulationALO {
       // Opening and scanning the file
       // File fobj = new File(System.getProperty("user.dir")+
       // "/dataset/RandSimple"+bot+"000.txt");
-      File fobj = new File(System.getProperty("user.dir") + "/cloudsim-3.0.3/datasets/randomSimple/RandSimple10000.txt");
+      File fobj = new File(System.getProperty("user.dir") + "/cloudsim-3.0.3/datasets/randomSimple/RandSimple1000.txt");
 //    	File fobj = new File(System.getProperty("user.dir") + "/datasets/randomStratified/RandStratified1000.txt");
 //      File fobj = new File(System.getProperty("user.dir") + "/cloudsim-3.0.3/datasets/SDSC/SDSC7395.txt");
       java.util.Scanner readFile = new java.util.Scanner(fobj);
@@ -152,7 +152,7 @@ public class CloudSimulationALO {
       int vmNumber = 54; // The number of VMs created
       // int cloudletNumber = bot*1000; // The number of Tasks created
       // int cloudletNumber = 7395; // SDSC Dataset
-//      int cloudletNumber = 1000;
+      int cloudletNumber = 1000;
 //      int cloudletNumber = 2000;
 //      int cloudletNumber = 3000;
 //      int cloudletNumber = 4000;
@@ -162,7 +162,7 @@ public class CloudSimulationALO {
 //      int cloudletNumber = 8000;
 //      int cloudletNumber = 9000;
 //      int cloudletNumber = 10000;
-      int cloudletNumber = 7395;
+//      int cloudletNumber = 7395;
       // Initialize the CloudSim library
       CloudSim.init(num_user, calendar, trace_flag);
 

@@ -40,7 +40,7 @@ public class CloudSimulation {
     private static PowerDatacenter datacenter1, datacenter2, datacenter3, datacenter4, datacenter5, datacenter6;
     private static List<Cloudlet> cloudletList;
     private static List<Vm> vmlist;
-    private static int bot = 2;
+    private static int bot = 1;
 
     public static void main(String[] args) {
         Locale.setDefault(new Locale("en", "US"));
@@ -90,42 +90,74 @@ public class CloudSimulation {
                 for (int dataCenterIterator = 1; dataCenterIterator <= 6; dataCenterIterator++) {
                     
                     // Parameters for DAPDP
-                    int Imax = 10;
+                    int Imax = 5;
                     int populationSize = 30;
-                    double wMax = 0.8;
+                    double wMax = 0.6;
                     double wMin = 0.3;
-                    double l1 = 2;
-                    double l2 = 2;
+                    double l1 = 2.0;
+                    double l2 = 2.0;
+                    
+                    // Static inertia weight for PSO
+                    double w = 0.6;
 
-                    OPSO OPSO = new OPSO(Imax, populationSize, wMax, wMin, l1, l2, cloudletList, vmlist, cloudletNumber);
+//                   // OPSO
+//                   OPSO OPSO = new OPSO(Imax, populationSize, wMax, wMin, l1, l2, cloudletList, vmlist, cloudletNumber);
+//
+//                   // Initialize population
+//                   System.out.println("Datacenter " + dataCenterIterator + " Population Initialization");
+//
+//                   Population population = OPSO.initPopulation(cloudletNumber, dataCenterIterator);
+//
+//                   // Evaluate initial fitness
+//                   OPSO.evaluateFitness(population, dataCenterIterator, cloudletIterator);
+//
+//                   // Iteration loop
+//                   int iteration = 1;
+//                   while (iteration <= Imax) {
+//                       OPSO.updateVelocitiesAndPositions(population, iteration, dataCenterIterator);
+//                       OPSO.evaluateFitness(population, dataCenterIterator, cloudletIterator);
+//
+//                       System.out.println("Iteration " + iteration + " Best Fitness: " + OPSO.getBestFitness());
+//
+//                       iteration++;
+//                   }
+//
+//
+//                   // Get the best solution
+//                   int[] bestSolution = OPSO.getBestVmAllocation();
+
+
+                    // PSO
+                    PSO PSO = new PSO(Imax, populationSize, w, l1, l2, cloudletList, vmlist, cloudletNumber);
 
                     // Initialize population
                     System.out.println("Datacenter " + dataCenterIterator + " Population Initialization");
 
-                    Population population = OPSO.initPopulation(cloudletNumber, dataCenterIterator);
+                    PopulationPSO population = PSO.initPopulation(cloudletNumber, dataCenterIterator);
 
                     // Evaluate initial fitness
-                    OPSO.evaluateFitness(population, dataCenterIterator, cloudletIterator);
+                    PSO.evaluateFitness(population, dataCenterIterator, cloudletIterator);
 
                     // Iteration loop
                     int iteration = 1;
                     while (iteration <= Imax) {
-                        OPSO.updateVelocitiesAndPositions(population, iteration, dataCenterIterator);
-                        OPSO.evaluateFitness(population, dataCenterIterator, cloudletIterator);
+                        PSO.updateVelocitiesAndPositions(population, iteration, dataCenterIterator);
+                        PSO.evaluateFitness(population, dataCenterIterator, cloudletIterator);
 
-                        System.out.println("Iteration " + iteration + " Best Fitness: " + OPSO.getBestFitness());
+                        System.out.println("Iteration " + iteration + " Best Fitness: " + PSO.getBestFitness());
 
                         iteration++;
                     }
 
                     // Get the best solution
-                    int[] bestSolution = OPSO.getBestVmAllocation();
+                    int[] bestSolution = PSO.getBestVmAllocation();
 
-                    // Assign tasks to VMs based on bestSolution
+                    
+//                     Assign tasks to VMs based on bestSolution
                     for (int assigner = 0 + (dataCenterIterator - 1) * 9 + cloudletIterator * 54;
                          assigner < 9 + (dataCenterIterator - 1) * 9 + cloudletIterator * 54; assigner++) {
                         int vmId = bestSolution[assigner - (dataCenterIterator - 1) * 9 - cloudletIterator * 54];
-//                        System.out.println("Assigner: " + assigner + " vmId: " + vmId + " best solution length: " + bestSolution.length);
+                        //System.out.println("Assigner: " + assigner + " vmId: " + vmId + " best solution length: " + bestSolution.length);
                         broker.bindCloudletToVm(assigner, vmId);
                     }
                 }

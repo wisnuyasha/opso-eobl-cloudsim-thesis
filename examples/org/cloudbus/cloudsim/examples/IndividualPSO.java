@@ -2,23 +2,23 @@ package org.cloudbus.cloudsim.examples;
 
 import java.util.Random;
 
-public class Individual {
+public class IndividualPSO {
     private int[] chromosome;
     private double fitness = -1;
-    private int[] velocity;
+    private double[] velocity;
     private int[] personalBestPosition;
     private double personalBestFitness = Double.NEGATIVE_INFINITY;
 
-    public Individual(int[] chromosome) {
+    public IndividualPSO(int[] chromosome) {
         this.chromosome = chromosome;
-        this.velocity = new int[chromosome.length];
+        this.velocity = new double[chromosome.length];
         this.personalBestPosition = chromosome.clone();
         this.personalBestFitness = Double.NEGATIVE_INFINITY;
     }
 
-    public Individual(int chromosomeLength, int dataCenterIterator) {
+    public IndividualPSO(int chromosomeLength, int dataCenterIterator) {
         this.chromosome = new int[chromosomeLength];
-        this.velocity = new int[chromosomeLength];
+        this.velocity = new double[chromosomeLength];
         this.personalBestPosition = new int[chromosomeLength];
 
         dataCenterIterator = dataCenterIterator - 1;
@@ -27,26 +27,26 @@ public class Individual {
         int range = max - min + 1;
 
         // max velocity is 8/0.1 = 0.8
-        int vmSize = (int) ((54 / 6) - 1);
-        int Vmax = (int) (vmSize * 0.5); // Maksimum velocity
-        int minVelocity = -Vmax;
-        int maxVelocity = Vmax;
+        double vmSize = (54.0 / 6.0) - 1.0;
+        double Vmax = vmSize * 0.5;
+        double minVelocity = -Vmax;
+        double maxVelocity = Vmax;
 
         Random random = new Random();
 
         for (int gene = 0; gene < chromosomeLength; gene++) {
             int rand = random.nextInt(range) + min;
             setGene(gene, rand);
-            this.velocity[gene] = random.nextInt((maxVelocity - minVelocity) + 1) + minVelocity;
+            this.velocity[gene] = minVelocity + (maxVelocity - minVelocity) * random.nextDouble();
             this.personalBestPosition[gene] = rand;
         }
     }
 
-    public int[] getVelocity() {
+    public double[] getVelocity() {
         return this.velocity;
     }
 
-    public void setVelocity(int index, int value) {
+    public void setVelocity(int index, double value) {
         this.velocity[index] = value;
     }
 
