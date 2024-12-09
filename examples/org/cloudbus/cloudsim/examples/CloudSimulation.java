@@ -90,15 +90,15 @@ public class CloudSimulation {
                 for (int dataCenterIterator = 1; dataCenterIterator <= 6; dataCenterIterator++) {
                     
                     // Parameters for DAPDP
-                    int Imax = 10;
+                    int Imax = 5;
                     int populationSize = 30;
                     double wMax = 0.8;
-                    double wMin = 0.2;
-                    double l1 = 2.0;
-                    double l2 = 2.0;
+                    double wMin = 0.4;
+                    double l1 = 2.5;
+                    double l2 = 1.5;
                     
                     // Static inertia weight for PSO
-                    double w = 0.6;
+                    double w = 0.8 ;
 //
                    // OPSO
                   OPSO OPSO = new OPSO(Imax, populationSize, wMax, wMin, l1, l2, cloudletList, vmlist, cloudletNumber);

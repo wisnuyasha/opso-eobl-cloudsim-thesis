@@ -12,8 +12,8 @@ public class OPSO {
     private int populationSize; // Population size P
     private double wMax; // Maximum inertia weight
     private double wMin; // Minimum inertia weight
-    private double l1; // Learning factor
-    private double l2; // Learning factor
+    private double initialL1; // Initial Learning factor l1
+    private double initialL2; // Initial Learning factor l2
 
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
@@ -28,8 +28,8 @@ public class OPSO {
         this.populationSize = populationSize;
         this.wMax = wMax;
         this.wMin = wMin;
-        this.l1 = l1;
-        this.l2 = l2;
+        this.initialL1 = l1; // Store initial values for l1
+        this.initialL2 = l2; // Store initial values for l2
         this.cloudletList = cloudletList;
         this.vmList = vmList;
 
@@ -113,6 +113,9 @@ public class OPSO {
     public void updateVelocitiesAndPositions(Population population, int iteration, int dataCenterIterator) {
         double w = wMax - ((wMax - wMin) * iteration) / Imax; // Update inertia weight
         // System.out.println("----------- Iteration: " + iteration + ", Inertia Weight (w): " + w);
+        
+        double l1 = initialL1 * (1 - (double) iteration / Imax) ; 			// Decrease l1 over iterations
+        double l2 = initialL2 * ((double) iteration / Imax);                // Increase l2 over iterations
 
         Random random = new Random();
         int dcIndex = dataCenterIterator - 1;
