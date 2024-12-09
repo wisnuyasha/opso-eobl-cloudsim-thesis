@@ -1,4 +1,4 @@
-package org.cloudbus.cloudsim.examples;
+package org.cloudbus.cloudsim.examples.draft;
 
 import java.util.Locale;
 import java.io.BufferedWriter;
@@ -82,9 +82,9 @@ public class CloudSimulationALO {
       // Opening and scanning the file
       // File fobj = new File(System.getProperty("user.dir")+
       // "/dataset/RandSimple"+bot+"000.txt");
-//      File fobj = new File(System.getProperty("user.dir") + "/datasets/randomSimple/RandSimple10000.txt");
+      File fobj = new File(System.getProperty("user.dir") + "/cloudsim-3.0.3/datasets/randomSimple/RandSimple1000.txt");
 //    	File fobj = new File(System.getProperty("user.dir") + "/datasets/randomStratified/RandStratified1000.txt");
-      File fobj = new File(System.getProperty("user.dir") + "/datasets/SDSC/SDSC7395.txt");
+//      File fobj = new File(System.getProperty("user.dir") + "/cloudsim-3.0.3/datasets/SDSC/SDSC7395.txt");
       java.util.Scanner readFile = new java.util.Scanner(fobj);
 
       while (readFile.hasNextLine() && cloudletcount > 0) {
@@ -152,7 +152,7 @@ public class CloudSimulationALO {
       int vmNumber = 54; // The number of VMs created
       // int cloudletNumber = bot*1000; // The number of Tasks created
       // int cloudletNumber = 7395; // SDSC Dataset
-//      int cloudletNumber = 1000;
+      int cloudletNumber = 1000;
 //      int cloudletNumber = 2000;
 //      int cloudletNumber = 3000;
 //      int cloudletNumber = 4000;
@@ -162,7 +162,7 @@ public class CloudSimulationALO {
 //      int cloudletNumber = 8000;
 //      int cloudletNumber = 9000;
 //      int cloudletNumber = 10000;
-      int cloudletNumber = 7395;
+//      int cloudletNumber = 7395;
       // Initialize the CloudSim library
       CloudSim.init(num_user, calendar, trace_flag);
 
@@ -234,7 +234,7 @@ public class CloudSimulationALO {
               ALO.randomWalk(ant, minGene, maxGene);
               // ALO.randomWalk(ant, 0, 8);
               // ALO.randomWalk(ant, 0, 53);
-            }
+            } 
 
             ALO.trapAnts(Antpopulation, Antlionpopulation, dataCenterIterator, cloudletIterator);
 

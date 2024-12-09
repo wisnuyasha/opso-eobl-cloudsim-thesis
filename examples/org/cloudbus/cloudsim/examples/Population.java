@@ -24,6 +24,37 @@ public class Population {
         return this.population;
     }
 
+    public Individual getFittest(int offset) {
+      Arrays.sort(this.population, new Comparator<Individual>() {
+        @Override
+        public int compare(Individual o1, Individual o2) {
+          if (o1.getFitness() < o2.getFitness()) {
+            return 1;
+          } else if (o1.getFitness() > o2.getFitness()) {
+            return -1;
+          }
+          return 0;
+        }
+      });
+      return this.population[offset];
+    }
+
+    public int getIndexOfLeastFit() {
+        Arrays.sort(this.population, new Comparator<Individual>() {
+          @Override
+          public int compare(Individual o1, Individual o2) {
+            if (o1.getFitness() < o2.getFitness()) {
+              return -1;
+            } else if (o1.getFitness() > o2.getFitness()) {
+              return 1;
+            }
+            return 0;
+          }
+        });
+
+        return 0;
+    }
+
     public int size() {
         return this.population.length;
     }

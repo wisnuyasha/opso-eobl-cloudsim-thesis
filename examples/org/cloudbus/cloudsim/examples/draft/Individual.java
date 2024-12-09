@@ -1,4 +1,4 @@
-package org.cloudbus.cloudsim.examples;
+package org.cloudbus.cloudsim.examples.draft;
 
 // import java.util.Arrays;
 import java.util.Random;
