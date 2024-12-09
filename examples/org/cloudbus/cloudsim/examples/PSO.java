@@ -17,8 +17,9 @@ public class PSO {
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
 
-    private double globalBestFitness = Double.NEGATIVE_INFINITY;
-    private int[] globalBestPosition;
+    private int numberOfDataCenters = 6;
+    private double[] globalBestFitnesses;
+    private int[][] globalBestPositions;
 
     public PSO(int Imax, int populationSize, double w, double l1, double l2,
                          List<Cloudlet> cloudletList, List<Vm> vmList, int chromosomeLength) {
@@ -29,7 +30,14 @@ public class PSO {
         this.l2 = l2;
         this.cloudletList = cloudletList;
         this.vmList = vmList;
-        this.globalBestPosition = new int[chromosomeLength];
+
+        globalBestFitnesses = new double[numberOfDataCenters];
+        globalBestPositions = new int[numberOfDataCenters][];
+
+        for (int i = 0; i < numberOfDataCenters; i++) {
+            globalBestFitnesses[i] = Double.NEGATIVE_INFINITY;
+            globalBestPositions[i] = null;
+        }
     }
 
     // Step 3: Initialize population
@@ -51,10 +59,10 @@ public class PSO {
             }
 
             // Step 6: Update global best
-            if (fitness > globalBestFitness) {
-                globalBestFitness = fitness;
-                // System.out.println("Chromosome: " + individual.toString());
-                globalBestPosition = individual.getChromosome().clone();
+            int dcIndex = dataCenterIterator - 1;
+            if (fitness > globalBestFitnesses[dcIndex]) {
+                globalBestFitnesses[dcIndex] = fitness;
+                globalBestPositions[dcIndex] = individual.getChromosome().clone();
             }
         }
     }
@@ -63,11 +71,15 @@ public class PSO {
     public void updateVelocitiesAndPositions(PopulationPSO population, int iteration, int dataCenterIterator) {
         Random random = new Random();
 
+        int dcIndex = dataCenterIterator - 1;
+        
+        int[] currentGlobalBestPosition = globalBestPositions[dcIndex];
+
         for (IndividualPSO particle : population.getIndividuals()) {
             for (int i = 0; i < particle.getChromosomeLength(); i++) {
                 double vPrev = particle.getVelocity()[i];
                 double pBest = particle.getPersonalBestPosition()[i];
-                double gBest = globalBestPosition[i];
+                int gBest = currentGlobalBestPosition[i];
                 int currentPosition = particle.getGene(i);
 
                 double r1 = random.nextDouble();
@@ -160,11 +172,11 @@ public class PSO {
       return 1.0 / totalCost;
     }
 
-    public int[] getBestVmAllocation() {
-        return globalBestPosition;
+    public int[] getBestVmAllocationForDatacenter(int dataCenterIterator) {
+        return globalBestPositions[dataCenterIterator - 1];
     }
 
-    public double getBestFitness() {
-        return globalBestFitness;
+    public double getBestFitnessForDatacenter(int dataCenterIterator) {
+        return globalBestFitnesses[dataCenterIterator - 1];
     }
 }

@@ -18,8 +18,9 @@ public class OPSO {
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
 
-    private double globalBestFitness = Double.NEGATIVE_INFINITY;
-    private int[] globalBestPosition;
+    private int numberOfDataCenters = 6;
+    private double[] globalBestFitnesses;
+    private int[][] globalBestPositions;
 
     public OPSO(int Imax, int populationSize, double wMax, double wMin, double l1, double l2,
                          List<Cloudlet> cloudletList, List<Vm> vmList, int chromosomeLength) {
@@ -31,7 +32,14 @@ public class OPSO {
         this.l2 = l2;
         this.cloudletList = cloudletList;
         this.vmList = vmList;
-//        this.globalBestPosition = new int[chromosomeLength];
+
+        globalBestFitnesses = new double[numberOfDataCenters];
+        globalBestPositions = new int[numberOfDataCenters][];
+
+        for (int i = 0; i < numberOfDataCenters; i++) {
+            globalBestFitnesses[i] = Double.NEGATIVE_INFINITY;
+            globalBestPositions[i] = null;
+        }
     }
 
     // Step 3: Initialize population
@@ -53,45 +61,51 @@ public class OPSO {
             }
 
             // Step 6: Update global best
-            if (fitness > globalBestFitness) {
-                globalBestFitness = fitness;
-                // System.out.println("Chromosome: " + individual.toString());
-                globalBestPosition = individual.getChromosome().clone();
+            int dcIndex = dataCenterIterator - 1;
+            if (fitness > globalBestFitnesses[dcIndex]) {
+                globalBestFitnesses[dcIndex] = fitness;
+                globalBestPositions[dcIndex] = individual.getChromosome().clone();
             }
         }
         
-//       applyEOBL(population, dataCenterIterator, cloudletIteration);
+        applyEOBL(population, dataCenterIterator, cloudletIteration);
     }
 
     public void applyEOBL(Population population, int dataCenterIterator, int cloudletIteration) {
+        int dcIndex = dataCenterIterator - 1;
+
         int maxGene = ((dataCenterIterator) * 9) - 1;
         int minGene = (dataCenterIterator - 1) * 9;
         
         Random random = new Random();
 
-        int[] oppositeSolution = new int[globalBestPosition.length];
+        int[] currentGlobalBestPosition = globalBestPositions[dcIndex];
+        double currentGlobalBestFitness = globalBestFitnesses[dcIndex];
 
-        for (int i = 0; i < globalBestPosition.length; i++) {
-            int gb = globalBestPosition[i];
+        int[] oppositeSolution = new int[currentGlobalBestPosition.length];
+
+        for (int i = 0; i < currentGlobalBestPosition.length; i++) {
+            int gb = currentGlobalBestPosition[i];
             int candidate;
             do {
                 candidate = minGene + random.nextInt(maxGene - minGene + 1);
             } while (candidate == gb);
-            
-            oppositeSolution[i] = candidate;
-        }
 
+            oppositeSolution[i] = candidate;
+            // System.out.println("-----EOBL DEBUG: " + candidate + " ----- Before :" + gb);
+        }
+        
         Individual oppositeIndividual = new Individual(oppositeSolution);
 
-        // evaluate fitness & update gbest 
         double oppositeFitness = calcFitness(oppositeIndividual, dataCenterIterator, cloudletIteration);
         oppositeIndividual.setFitness(oppositeFitness);
 
 
-        if (oppositeFitness > globalBestFitness) {
-            System.out.println("-----EOBL SUCCESS: " + oppositeFitness + " ----- Before :" + globalBestFitness);
-            globalBestFitness = oppositeFitness;
-            globalBestPosition = oppositeIndividual.getChromosome().clone();
+        if (oppositeFitness > currentGlobalBestFitness) {
+            System.out.println("-----EOBL SUCCESS: " + oppositeFitness + " ----- Before :" + currentGlobalBestFitness);
+
+            globalBestFitnesses[dcIndex] = oppositeFitness;
+            globalBestPositions[dcIndex] = oppositeIndividual.getChromosome().clone();
         }
     }
 
@@ -101,12 +115,15 @@ public class OPSO {
         // System.out.println("----------- Iteration: " + iteration + ", Inertia Weight (w): " + w);
 
         Random random = new Random();
+        int dcIndex = dataCenterIterator - 1;
+        
+        int[] currentGlobalBestPosition = globalBestPositions[dcIndex];
 
         for (Individual particle : population.getIndividuals()) {
             for (int i = 0; i < particle.getChromosomeLength(); i++) {
                 int vPrev = particle.getVelocity()[i];
                 int pBest = particle.getPersonalBestPosition()[i];
-                int gBest = globalBestPosition[i];
+                int gBest = currentGlobalBestPosition[i];
                 int currentPosition = particle.getGene(i);
 
                 double r1 = random.nextDouble(); // r1 antara 0.0 hingga 1.0
@@ -183,15 +200,6 @@ public class OPSO {
             iterator++;
         }
 
-        // // System Fairness F (Equation 1)
-        // double fitness = -totalExecutionTime; // Negative for minimization
-        // double fitness = - (totalExecutionTime + totalCost);
-
-        // Calculate makespan and cost fitness components
-        // System.out.println("-----Cloudlet Iteration: " + cloudletIteration);
-        // System.out.println("-Total Execution Time (before): " + totalExecutionTime);
-        // System.out.println("-Total Cost (before): " + totalCost);
-
         double makespanFitness = calculateMakespanFitness(totalExecutionTime);
         double costFitness = calculateCostFitness(totalCost);
         // System.out.println("--Total Execution Time (Makespan Fitness) (after): " + makespanFitness);
@@ -232,11 +240,11 @@ public class OPSO {
       return 1.0 / totalCost;
     }
 
-    public int[] getBestVmAllocation() {
-        return globalBestPosition;
+    public int[] getBestVmAllocationForDatacenter(int dataCenterIterator) {
+        return globalBestPositions[dataCenterIterator - 1];
     }
 
-    public double getBestFitness() {
-        return globalBestFitness;
+    public double getBestFitnessForDatacenter(int dataCenterIterator) {
+        return globalBestFitnesses[dataCenterIterator - 1];
     }
 }
