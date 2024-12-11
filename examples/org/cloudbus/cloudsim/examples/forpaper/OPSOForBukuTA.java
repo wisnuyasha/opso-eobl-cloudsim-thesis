@@ -31,7 +31,7 @@ public class OPSO {
         this.wMin = wMin;
         this.l1 = l1; // Store initial values for l1
         this.l2 = l2; // Store initial values for l2
-        this.d = d;
+        this.d = d
         this.cloudletList = cloudletList;
         this.vmList = vmList;
 
@@ -43,7 +43,6 @@ public class OPSO {
             globalBestPositions[i] = null;
         }
     }
-
     // Step 3: Initialize population
     public Population initPopulation(int chromosomeLength, int dataCenterIterator) {
         Population population = new Population(this.populationSize, chromosomeLength, dataCenterIterator);
@@ -70,7 +69,7 @@ public class OPSO {
             }
         }
         
-        applyEOBL(population, dataCenterIterator, cloudletIteration);
+       applyEOBL(population, dataCenterIterator, cloudletIteration);
     }
 
     public void applyEOBL(Population population, int dataCenterIterator, int cloudletIteration) {
@@ -96,7 +95,6 @@ public class OPSO {
             }
 
             oppositeSolution[i] = candidate;
-//             System.out.println("-----EOBL DEBUG: " + minGene + maxGene + " Before :" + currentGlobalBestPosition[i] + "After :" + oppositeSolution[i]);
         }
         
         Individual oppositeIndividual = new Individual(oppositeSolution);
@@ -116,7 +114,6 @@ public class OPSO {
     // Step 7: Update velocities and positions
     public void updateVelocitiesAndPositions(Population population, int iteration, int dataCenterIterator) {
         double w = wMax - (wMax - wMin) * Math.pow((double) iteration / Imax, 2);
-        // System.out.println("----------- Iteration: " + iteration + ", Inertia Weight (w): " + w);
         
         Random random = new Random();
         int dcIndex = dataCenterIterator - 1;
@@ -130,8 +127,8 @@ public class OPSO {
                 int gBest = currentGlobalBestPosition[i];
                 int currentPosition = particle.getGene(i);
 
-                double r1 = random.nextDouble(); // r1 antara 0.0 hingga 1.0
-                double r2 = random.nextDouble(); // r2 antara 0.0 hingga 1.0
+                double r1 = random.nextDouble(); 
+                double r2 = random.nextDouble();
 
                 // Update velocity
                 int newVelocity = (int) Math.round(
@@ -139,9 +136,6 @@ public class OPSO {
                     + l1 * r1 * (pBest - currentPosition)
                     + l2 * r2 * (gBest - currentPosition)
                 );
-//                System.out.println("-----Iteration: " + i + "-----");
-//                System.out.println("Previous Velocity (vPrev): " + vPrev);
-//                System.out.println("-New Velocity (raw): " + newVelocity);
 
                 // Apply position bounds
                 int vmSize = (int) ((double) vmList.size() / 6.0 - 1.0);
@@ -158,14 +152,10 @@ public class OPSO {
 
                 // Update position
                 int newPosition = currentPosition + newVelocity;
-//                System.out.println("Current Position: " + currentPosition);
-//                System.out.println("-New Position (raw): " + newPosition);
 
                 // Apply position bounds
                 int minPosition = (dataCenterIterator - 1) * 9;
                 int maxPosition = ((dataCenterIterator) * 9) - 1;
-                // int minPosition = 0;
-                // int maxPosition = vmList.size() - 1;
 
                 // If the position is invalid
                 if (newPosition < minPosition) {
@@ -177,11 +167,6 @@ public class OPSO {
                 // Update particle
                 particle.setVelocity(i, newVelocity);
                 particle.setGene(i, newPosition);
-
-//                System.out.println("pBest: " + pBest + ", gBest: " + gBest);
-//                System.out.println("r1: " + r1 + ", r2: " + r2);
-//                System.out.println("--New Velocity (bounded): " + newVelocity);
-//                System.out.println("--New Position (bounded): " + newPosition);
             }
         }
     }
@@ -206,9 +191,6 @@ public class OPSO {
 
         double makespanFitness = calculateMakespanFitness(totalExecutionTime);
         double costFitness = calculateCostFitness(totalCost);
-        // System.out.println("--Total Execution Time (Makespan Fitness) (after): " + makespanFitness);
-        // System.out.println("--Total Cost (Cost Fitness) (after): " + costFitness);
-        
         double fitness = makespanFitness + costFitness;
 
         return fitness;
@@ -235,12 +217,10 @@ public class OPSO {
     }
 
     private double calculateMakespanFitness(double totalExecutionTime) {
-      // The higher the makespan, the lower the fitness
       return 1.0 / totalExecutionTime;
     }
 
     private double calculateCostFitness(double totalCost) {
-      // The lower the cost, the higher the fitness
       return 1.0 / totalCost;
     }
 
