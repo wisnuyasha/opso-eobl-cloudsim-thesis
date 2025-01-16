@@ -29,8 +29,8 @@ public class OPSO {
         this.populationSize = populationSize;
         this.wMax = wMax;
         this.wMin = wMin;
-        this.l1 = l1; // Store initial values for l1
-        this.l2 = l2; // Store initial values for l2
+        this.l1 = l1;
+        this.l2 = l2;
         this.d = d;
         this.cloudletList = cloudletList;
         this.vmList = vmList;
